@@ -1,10 +1,18 @@
 pipeline {
     agent any
 
+    environment {
+        VENV_DIR = 'venv'
+    }
+
+    tools {
+        python 'Python3'
+    }
+
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/mohanDevOps-arch/Student_App.git'
+                git 'https://github.com/minnathdhani/CICD-Jenkins.git'
             }
         }
 
@@ -28,3 +36,17 @@ pipeline {
         }
     }
 }
+
+   post {
+       success {
+            mail to: 'dhaniminnath@gmail.com',
+                 subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Pipeline completed successfully at ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'dhaniminnath@gmail.com',
+                 subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Pipeline failed. Check logs at ${env.BUILD_URL}"
+        }
+    }
+
