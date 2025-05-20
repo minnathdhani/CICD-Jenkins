@@ -30,8 +30,7 @@ pipeline {
 
         stage('Run Flask App') {
             steps {
-                sh 'docker run -d 5000:5000 python:3.10 nohup python app.py &
-'
+                sh 'docker run -d 5000:5000 python:3.10 nohup python app.py &'
             }
         }
     }
@@ -39,12 +38,12 @@ pipeline {
 
    post {
        success {
-            mail to: 'dhaniminnath@gmail.com',
+            mail to: 'minnathdhani@gmail.com',
                  subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Pipeline completed successfully at ${env.BUILD_URL}"
         }
         failure {
-            mail to: 'dhaniminnath@gmail.com',
+            mail to: 'minnathdhani@gmail.com',
                  subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Pipeline failed. Check logs at ${env.BUILD_URL}"
         }
