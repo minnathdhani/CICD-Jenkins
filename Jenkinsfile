@@ -1,15 +1,10 @@
 pipeline {
     agent any
-
-    environment {
-        VENV_DIR = 'venv'
-    }
-
     
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/minnathdhani/CICD-Jenkins.git'
+                git branch: 'main', url:'https://github.com/minnathdhani/CICD-Jenkins.git'
             }
         }
 
