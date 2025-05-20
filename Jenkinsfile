@@ -5,10 +5,7 @@ pipeline {
         VENV_DIR = 'venv'
     }
 
-    tools {
-        python 'Python3'
-    }
-
+    
     stages {
         stage('Clone Repo') {
             steps {
@@ -18,6 +15,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
+		sh 'python3 -v'
                 sh 'pip install -r requirements.txt'
             }
         }
