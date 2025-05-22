@@ -20,20 +20,32 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
+	    steps {
 		sh '''
-		          . venv/bin/activate
-    			  pytest tests/ || echo "No tests found"
+                  source venv/bin/activate
+                  if [ -d "tests" ]; then
+                      pytest tests/
+                  else
+                      echo "No tests found"
+                 fi
         '''
-
-                            }
+              }
         }
+
 
         stage('Run Flask App') {
-            steps {
-                sh 'docker run -d 5000:5000 python:3.10 nohup python app.py &'
-            }
-        }
+	    steps {
+        	sh '''
+                  docker run -d -p 5000:5000 \
+		  -v "$PWD":/app -w /app \
+                  python:3.10-slim \
+		  bash -c "pip install -r requirements.txt && python app.py"
+        '''
+                  }
+         }
+
+            
+        
     }
 }
 
