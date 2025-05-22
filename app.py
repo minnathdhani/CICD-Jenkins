@@ -7,7 +7,7 @@ from bson.regex import Regex
 app = Flask(__name__)
 
 # Connect to MongoDB
-client = MongoClient("mongodb+srv://mohan:herovired@herovired.f3do4.mongodb.net/")  # Replace with your MongoDB URI
+client = MongoClient("mongodb+srv://minnathdhani:Minnath%40123@minnath.nuy0c.mongodb.net/?retryWrites=true&w=majority&appName=Minnath")  # Replace with your MongoDB URI
 db = client["student_db"]  # Database name
 students_collection = db["students"]  # Collection name
 
