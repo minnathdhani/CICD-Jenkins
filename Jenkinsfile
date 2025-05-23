@@ -37,11 +37,11 @@ pipeline {
         stage('Run Flask App') {
 	    steps {
         	sh '''
-                  docker run -d -p 5000:5000 \
-		  -v "$PWD":/app -w /app \
-                  python:3.10-slim \
+                  docker run -d -p 5050:5000 \
+		  -v /var/lib/jenkins/workspace/minnath-flask-cicd:/app \
+                  -w /app python:3.10-slim \
 		  bash -c "pip install -r requirements.txt && python app.py"
-        '''
+            '''
                   }
          }
 
