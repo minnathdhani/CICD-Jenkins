@@ -13,11 +13,11 @@ def client():
         yield client
 
 def test_get_student_by_name(client):
-    students_collection.insert_one({"name": "Alice", "age": 21})
-    response = client.get('/students/name/Alice')
+    students_collection.insert_one({"name": "Alice Johnson", "age": 28})
+    response = client.get('/students/name/Alice Johnson')
     assert response.status_code == 200
     assert len(response.json) > 0
-    assert response.json[0]["name"] == "Alice"
+    assert response.json[0]["name"] == "Alice Johnson"
 
 def test_get_student_by_name_not_found(client):
     response = client.get('/students/name/NonExistentName')
@@ -25,20 +25,20 @@ def test_get_student_by_name_not_found(client):
     assert response.json["error"] == "No students found with the given name"
 
 def test_add_student(client):
-    response = client.post('/students', json={"name": "Bob", "age": 22})
+    response = client.post('/students', json={"name": "Bob Smith", "age": 34})
     assert response.status_code == 201
-    assert response.json["name"] == "Bob"
-    assert response.json["age"] == 22
+    assert response.json["name"] == "Bob Smith"
+    assert response.json["age"] == 34
 
 def test_get_all_students(client):
-    students_collection.insert_one({"name": "TestUser", "age": 20})
+    students_collection.insert_one({"name": "Charlie Lee", "age": 22})
     response = client.get('/students')
     assert response.status_code == 200
     assert isinstance(response.json, list)
-    assert len(response.json) > 0
+    assert len(response.json) == 22
 
 def test_delete_student(client):
-    student = students_collection.insert_one({"name": "Charlie", "age": 23})
+    student = students_collection.insert_one({"name": "Diana Patel", "age": 30})
     response = client.delete(f'/students/{student.inserted_id}')
     assert response.status_code == 200
     assert response.json["message"] == "Deleted"
