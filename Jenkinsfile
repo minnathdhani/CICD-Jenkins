@@ -8,7 +8,7 @@ pipeline {
                 echo 'Building...'
             }
         }
-    }
+    
     post {
         always {
             echo 'Cleanup or notifications...'
