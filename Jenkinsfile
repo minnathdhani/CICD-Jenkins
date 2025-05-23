@@ -14,7 +14,7 @@ pipeline {
 		sh '''
 		          python3 -m venv venv
 		          . venv/bin/activate
-      			  pip install -r requirements.txt
+      			  pip3 install -r requirements.txt
       		  '''
              
             }
@@ -39,8 +39,8 @@ pipeline {
 	    steps {
         	sh '''
                   docker run -d -p 5050:5000 \
-		  -v /var/lib/jenkins/workspace/minnath-flask-cicd:/app \
-                  -w /app python:3.10-slim \
+		  -v $(pwd):/app \
+                  -w /app python:3.10 \
 		  bash -c "pip install -r requirements.txt && python app.py"
             '''
                   }
@@ -61,6 +61,9 @@ pipeline {
             mail to: 'minnathdhani@gmail.com',
                  subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Pipeline failed. Check logs at ${env.BUILD_URL}"
+        }
+	always {
+            sh 'docker ps -q --filter "ancestor=python:3.10" | xargs -r docker stop'
         }
     }
 
