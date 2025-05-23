@@ -1,7 +1,20 @@
 pipeline {
     agent any
-    
+
     stages {
+
+	 stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleanup or notifications...'
+        }
+    }
+
         stage('Clone Repo') {
             steps {
                 git branch: 'main', url:'https://github.com/minnathdhani/CICD-Jenkins.git'
