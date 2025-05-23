@@ -22,8 +22,9 @@ pipeline {
         stage('Run Tests') {
 	    steps {
 		sh '''
-                  source venv/bin/activate
+                  . venv/bin/activate
                   if [ -d "tests" ]; then
+		      echo "Running tests..."
                       pytest tests/
                   else
                       echo "No tests found"
