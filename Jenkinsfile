@@ -11,7 +11,7 @@ pipeline {
 
          stage('Install Dependencies') {
             steps {
-		sh '''
+	       sh '''
 		          python3 -m venv venv
 		          . venv/bin/activate
 		          pip3 install -r requirements.txt
@@ -37,7 +37,7 @@ pipeline {
 
          stage('Run Flask App') {
             steps {
-               sh """
+               sh '''
                   docker run -d \
                   --name flask-app \
                   -p 5001:5000 \
@@ -45,7 +45,7 @@ pipeline {
                   -w /app \
                   python:3.10 \
                   bash -c "pip install -r requirements.txt && python app.py"
-            """
+            '''
             echo "Application running on port ${port}"
         }
     }
