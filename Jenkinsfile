@@ -9,7 +9,7 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+         stage('Install Dependencies') {
             steps {
 		sh '''
 		          python3 -m venv venv
@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+         stage('Run Tests') {
 	    steps {
 		sh '''
                   . venv/bin/activate
@@ -35,23 +35,10 @@ pipeline {
         }
 
 
-        stage('Run Flask App') {
-    	    steps {
-       	        script {
-            	// Find available port starting from 5050
-                   def port = 5050
-                   while (true) {
-                       try {
-                           sh "nc -z localhost ${port} || exit 0"
-                           port++
-                        } catch (Exception e) {
-                            break
-                        }
-            }
-            
-            // Run container with the found port
-            sh """
-                docker run -d \
+         stage('Run Flask App') {
+            steps {
+               sh """
+                  docker run -d \
                   --name flask-app \
                   -p ${port}:5000 \
                   -v $(pwd):/app \
@@ -62,7 +49,7 @@ pipeline {
             echo "Application running on port ${port}"
         }
     }
-}
+
 
             
         
@@ -81,7 +68,14 @@ pipeline {
                  body: "Pipeline failed. Check logs at ${env.BUILD_URL}"
         }
 	always {
-            sh 'docker ps -q --filter "ancestor=python:3.10" | xargs -r docker stop'
+            sh '''
+                 # Clean up containers
+                 docker ps -aq --filter "name=flask-app" | xargs -r docker stop || true
+                 docker ps -aq --filter "name=flask-app" | xargs -r docker rm || true
+            
+           	 # Clean up dangling images
+                 docker image prune -f
+             '''
         }
     }
 
