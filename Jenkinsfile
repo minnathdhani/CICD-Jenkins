@@ -36,15 +36,33 @@ pipeline {
 
 
         stage('Run Flask App') {
-	    steps {
-        	sh '''
-                  docker run -d -p 5050:5000 \
-		  -v $(pwd):/app \
-                  -w /app python:3.10 \
-		  bash -c "pip install -r requirements.txt && python app.py"
-            '''
-                  }
-         }
+    	    steps {
+       	        script {
+            	// Find available port starting from 5050
+                   def port = 5050
+                   while (true) {
+                       try {
+                           sh "nc -z localhost ${port} || exit 0"
+                           port++
+                        } catch (Exception e) {
+                            break
+                        }
+            }
+            
+            // Run container with the found port
+            sh """
+                docker run -d \
+                  --name flask-app \
+                  -p ${port}:5000 \
+                  -v $(pwd):/app \
+                  -w /app \
+                  python:3.10 \
+                  bash -c "pip install -r requirements.txt && python app.py"
+            """
+            echo "Application running on port ${port}"
+        }
+    }
+}
 
             
         
