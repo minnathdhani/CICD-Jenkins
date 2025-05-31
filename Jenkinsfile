@@ -14,8 +14,8 @@ pipeline {
 		sh '''
 		          python3 -m venv venv
 		          . venv/bin/activate
-      			  pip3 install -r requirements.txt
-      		  '''
+		          pip3 install -r requirements.txt
+	        '''
              
             }
         }
@@ -40,7 +40,7 @@ pipeline {
                sh """
                   docker run -d \
                   --name flask-app \
-                  -p ${port}:5000 \
+                  -p 5001:5000 \
                   -v $(pwd):/app \
                   -w /app \
                   python:3.10 \
