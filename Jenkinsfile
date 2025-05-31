@@ -37,6 +37,9 @@ pipeline {
 
          stage('Run Flask App') {
             steps {
+
+               sh 'docker rm -f flask-app || true'
+
                sh '''
                   docker run -d \
                   --name flask-app \
@@ -46,7 +49,7 @@ pipeline {
                   python:3.10 \
                   bash -c "pip install -r requirements.txt && python app.py"
             '''
-            echo "Application running on port ${port}"
+            
         }
     }
 
