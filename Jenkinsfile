@@ -8,7 +8,7 @@ pipeline {
         EC2_USER = "ubuntu"
         EC2_HOST = "13.201.229.37"
         CONTAINER_NAME = "minnath-flask-cicd"
-        DOCKER_IMAGE = "thirumalaipy/flask"
+        DOCKER_IMAGE = "minnathdhani/flask"
         DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
         DOCKER_REGISTRY = "https://index.docker.io/v1"
         DOCKER_NETWORK = "app-network"
