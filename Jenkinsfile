@@ -83,7 +83,36 @@ pipeline {
             }
         }
 
-        
+       stage('Deploy to EC2') {
+            steps {
+                sshagent(credentials: ['minnath-ec2']) {
+                    sh """
+                        echo "Deploying to EC2..."
+
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
+                            echo "Checking if Docker network ${DOCKER_NETWORK} exists..."
+                            docker network inspect ${DOCKER_NETWORK} > /dev/null 2>&1 || docker network create ${DOCKER_NETWORK}
+  
+                            echo "Pulling Flask Application Image..."
+                            docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                            echo "Stopping existing Flask container if running..."
+                            docker stop ${CONTAINER_NAME} || true
+                            docker rm ${CONTAINER_NAME} || true
+
+                            echo "Starting new Flask container connected to network ${DOCKER_NETWORK}..."
+                            docker run -d --name ${CONTAINER_NAME} --network ${DOCKER_NETWORK} \
+                                -p 8000:8000 \
+                                -e JWT_SECRET_KEY=minnathdhani \
+                                -e MONGO_DB_NAME=flask_db \
+                                ${DOCKER_IMAGE}:${BUILD_NUMBER}
+
+                            echo "Deployment done."
+                        '
+                    """
+               }
+            }
+        }
         
     }
 }
