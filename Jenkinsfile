@@ -1,13 +1,33 @@
 pipeline {
     agent any
+     
+    environment {
+        GITREPO = "https://github.com/minnathdhani/CICD-Jenkins.git"
+        GIT_BRANCH = "main"
+        EC2_SSH = "minnath-ec2"
+        EC2_USER = "ubuntu"
+        EC2_HOST = "13.201.229.37"
+        CONTAINER_NAME = "minnath-flask-cicd"
+        DOCKER_IMAGE = "thirumalaipy/flask"
+        DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
+        DOCKER_REGISTRY = "https://index.docker.io/v1"
+        DOCKER_NETWORK = "app-network"
+     }
+
 
     stages {
-
-	 stage('Clone Repo') {
+        stage('Get Build Number') { 
             steps {
-                git branch: 'main', url:'https://github.com/minnathdhani/CICD-Jenkins.git'
+                echo "Build Number: ${BUILD_NUMBER}"
             }
         }
+
+        stage('Checkout Code') {
+            steps {
+                git branch: "${GIT_BRANCH}", url: "${GITREPO}"
+            }
+        }
+
 
          stage('Install Dependencies') {
             steps {
@@ -35,26 +55,35 @@ pipeline {
         }
 
 
-         stage('Run Flask App') {
+        stage('Build Docker Image') {
             steps {
-
-               sh 'docker rm -f flask-app || true'
-
-               sh '''
-                  docker run -d \
-                  --name flask-app \
-                  -p 5001:5000 \
-                  -v $(pwd):/app \
-                  -w /app \
-                  python:3.10 \
-                  bash -c "pip install -r requirements.txt && python app.py"
-            '''
-            
+                script {
+                    docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
+                }
+            }
         }
-    }
 
+        stage('Test Docker Credentials') {
+            steps {
+                script {
+                    docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                        echo "Docker credentials are valid."
+                    }
+                }
+            }
+        }
 
-            
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${DOCKER_IMAGE}:${BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+
+        
         
     }
 }
