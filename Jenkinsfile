@@ -12,6 +12,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
         DOCKER_REGISTRY = "https://index.docker.io/v1"
         DOCKER_NETWORK = "app-network"
+        MONGO_URI = credentials('minnath-MONGO-URI')
      }
 
 
@@ -43,6 +44,8 @@ pipeline {
          stage('Run Tests') {
 	    steps {
 		sh '''
+                   echo "Running tests with MONGO_URI=${MONGO_URI}"
+                   MONGO_URI=${MONGO_URI} venv/bin/pytest test_app.py --maxfail=1 --disable-warnings -q
                   . venv/bin/activate
                   if [ -d "tests" ]; then
 		      echo "Running tests..."
