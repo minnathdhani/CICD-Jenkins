@@ -110,7 +110,7 @@ pipeline {
                             echo "Deployment done."
                         '
                     """
-             
+              }
             }
         }
         
