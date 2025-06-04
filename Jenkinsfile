@@ -118,17 +118,58 @@ pipeline {
 }
 
    post {
-       success {
-            mail to: 'minnathdhani@gmail.com',
-                 subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Pipeline completed successfully at ${env.BUILD_URL}"
-        }
         failure {
-            mail to: 'minnathdhani@gmail.com',
-                 subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Pipeline failed. Check logs at ${env.BUILD_URL}"
+            echo 'Build or test failed. Sending notifications...'
+            emailext(
+    subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+    body: """\
+<html>
+<body>
+<h3>Flask Application Build FAILED ❌</h3>
+<p><strong>Job:</strong> ${env.JOB_NAME}</p>
+<p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+<p><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
+<p><strong>Git Repo:</strong> ${env.GITREPO}</p>
+<p><strong>Docker Image:</strong> ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}</p>
+<p><strong>EC2 Host:</strong> ${env.EC2_HOST}</p>
+<p><strong>Failure Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
+<p><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
+</body>
+</html>
+""",
+    mimeType: 'text/html',
+    to: "${ALERT_EMAIL}"
+)
+
         }
-	always {
+
+
+        success {
+            echo 'Build and deployment passed successfully!'
+            emailext(
+    subject: "✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+    body: """\
+<html>
+<body>
+<h3>Flask Application Build & Deployment SUCCEEDED ✅</h3>
+<p><strong>Job:</strong> ${env.JOB_NAME}</p>
+<p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+<p><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
+<p><strong>Git Repo:</strong> ${env.GITREPO}</p>
+<p><strong>Docker Image:</strong> ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}</p>
+<p><strong>Deployed To:</strong> EC2 (${env.EC2_HOST})</p>
+<p><strong>Deployment Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
+<p><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
+</body>
+</html>
+""",
+    mimeType: 'text/html',
+    to: "${ALERT_EMAIL}"
+)
+
+       }
+
+        always {
             sh '''
                  # Clean up containers
                  docker ps -aq --filter "name=flask-app" | xargs -r docker stop || true
@@ -139,4 +180,3 @@ pipeline {
              '''
         }
     }
-
