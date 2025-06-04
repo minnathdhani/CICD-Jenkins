@@ -52,8 +52,8 @@ Install the following plugins from Manage Jenkins > Plugin Manager:<br>
 3. Click Add Credentials<br>
    Kind: SSH Username with private key<br>
    Username: ec2-user (or whatever your EC2 login username is)<br>
-   Private Key: Choose "Enter directly", and paste your .pem key (e.g., minnath_new.pem)<br>
-   ID: minnath-ec2 (you will use this ID in Jenkinsfile)<br>
+   Private Key: Choose "Enter directly", and paste your .pem key (e.g., minnath-tm.pem)<br>
+   ID: minnathdhani-ec2 (you will use this ID in Jenkinsfile)<br>
 ---
 
 ## Triggers
