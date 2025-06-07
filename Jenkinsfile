@@ -12,7 +12,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
         DOCKER_REGISTRY = "https://index.docker.io/v1"
         DOCKER_NETWORK = "app-network"
-        ###MONGO_URI = credentials('minnath-MONGO-URI')
+        // MONGO_URI = credentials('minnath-MONGO-URI')
      }
 
 
