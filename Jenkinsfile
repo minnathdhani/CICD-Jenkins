@@ -6,13 +6,13 @@ pipeline {
         GIT_BRANCH = "main"
         EC2_SSH = "minnath-ec2"
         EC2_USER = "ubuntu"
-        EC2_HOST = "15.206.127.159"
+        EC2_HOST = "13.233.145.173"
         CONTAINER_NAME = "minnath-flask-cicd"
         DOCKER_IMAGE = "minnathdhani/flask"
         DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
         DOCKER_REGISTRY = "https://index.docker.io/v1"
         DOCKER_NETWORK = "app-network"
-        MONGO_URI = credentials('minnath-MONGO-URI')
+        ###MONGO_URI = credentials('minnath-MONGO-URI')
      }
 
 
