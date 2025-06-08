@@ -88,3 +88,28 @@ Install the following plugins from Manage Jenkins > Plugin Manager:<br>
 3. Email notifications on build success/failure
 4. GitHub webhook triggers on push to main
 5. Screenshots showing each pipeline stage (build, test, deploy)
+
+
+### Screenshorts:
+
+1. Jenkins dashboard showing pipeline success<br>
+    <br>
+
+2. Automatic pipeline build trigger<br>
+   
+3. Jenkins pripeline overview<br>
+    <img width="932" alt="image" src="https://github.com/user-attachments/assets/8b6f0b1c-3774-4bf2-acd1-1d92fef3e594" /><br>
+
+4. Email notifications<br>
+   Failure Email<br>
+   Success Email<br>
+   
+5. Application Screenshots<br>
+   <img width="956" alt="image" src="https://github.com/user-attachments/assets/692fcdb4-db00-4f09-bfb3-804d6c6d2483" /><br>
+   <img width="552" alt="image" src="https://github.com/user-attachments/assets/594a0b07-4a34-449d-901a-6eb4d7108f67" /><br>
+
+
+
+6. Adding new users<br>
+   
+
