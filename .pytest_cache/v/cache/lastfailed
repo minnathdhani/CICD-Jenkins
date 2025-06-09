@@ -1,0 +1,9 @@
+{
+  "test_app.py::test_get_student_by_name": true,
+  "test_app.py::test_get_student_by_name_not_found": true,
+  "test_app.py::test_add_student": true,
+  "test_app.py::test_get_all_students": true,
+  "test_app.py::test_delete_student": true,
+  "test_app.py::test_add_student_missing_fields": true,
+  "test_app.py::test_get_student_by_partial_name": true
+}
