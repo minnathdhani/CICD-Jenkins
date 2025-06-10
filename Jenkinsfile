@@ -1,6 +1,6 @@
 pipeline {
     agent any
-     
+
     environment {
         GITREPO = "https://github.com/minnathdhani/CICD-Jenkins.git"
         GIT_BRANCH = "main"
@@ -12,12 +12,11 @@ pipeline {
         DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
         DOCKER_REGISTRY = "https://index.docker.io/v1"
         DOCKER_NETWORK = "app-network"
-        // MONGO_URI = credentials('minnath-MONGO-URI')
-     }
-
+        ALERT_EMAIL = "your-alert@example.com" // ✅ Define the alert email
+    }
 
     stages {
-        stage('Get Build Number') { 
+        stage('Get Build Number') {
             steps {
                 echo "Build Number: ${BUILD_NUMBER}"
             }
@@ -29,32 +28,29 @@ pipeline {
             }
         }
 
-
-         stage('Install Dependencies') {
+        stage('Install Dependencies') {
             steps {
-	       sh '''
-		          python3 -m venv venv
-		          . venv/bin/activate
-		          pip3 install -r requirements.txt
-	        '''
-             
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    venv/bin/pip install -r requirements.txt
+                '''
             }
         }
 
-         stage('Run Tests') {
-	    steps {
-		sh '''
-                   . venv/bin/activate
-                  if [ -d "tests" ]; then
-		      echo "Running tests..."
-                      pytest tests/
-                  else
-                      echo "No tests found"
-                 fi
-        '''
-              }
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    . venv/bin/activate
+                    if [ -d "tests" ]; then
+                        echo "Running tests..."
+                        venv/bin/pytest tests/
+                    else
+                        echo "No tests found"
+                    fi
+                '''
+            }
         }
-
 
         stage('Build Docker Image') {
             steps {
@@ -84,16 +80,16 @@ pipeline {
             }
         }
 
-       stage('Deploy to EC2') {
+        stage('Deploy to EC2') {
             steps {
-                sshagent(credentials: ['minnath-ec2']) {
+                sshagent(credentials: ["${EC2_SSH}"]) {
                     sh """
                         echo "Deploying to EC2..."
 
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
                             echo "Checking if Docker network ${DOCKER_NETWORK} exists..."
                             docker network inspect ${DOCKER_NETWORK} > /dev/null 2>&1 || docker network create ${DOCKER_NETWORK}
-  
+
                             echo "Pulling Flask Application Image..."
                             docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
@@ -109,97 +105,91 @@ pipeline {
                                 ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
                             echo "Deployment done."
-                        '
+                        EOF
                     """
-              }
+                }
             }
         }
-        
     }
-}
 
-   post {
+    post {
         failure {
             echo 'Build or test failed. Sending notifications...'
             emailext(
-    subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-    body: """\
+                subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """\
 <html>
 <body>
 <h3>Flask Application Build FAILED ❌</h3>
 <p><strong>Job:</strong> ${env.JOB_NAME}</p>
 <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-<p><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
-<p><strong>Git Repo:</strong> ${env.GITREPO}</p>
-<p><strong>Docker Image:</strong> ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}</p>
-<p><strong>EC2 Host:</strong> ${env.EC2_HOST}</p>
+<p><strong>Branch:</strong> ${GIT_BRANCH}</p>
+<p><strong>Git Repo:</strong> ${GITREPO}</p>
+<p><strong>Docker Image:</strong> ${DOCKER_IMAGE}:${env.BUILD_NUMBER}</p>
+<p><strong>EC2 Host:</strong> ${EC2_HOST}</p>
 <p><strong>Failure Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
 <p><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
 </body>
 </html>
 """,
-    mimeType: 'text/html',
-    to: "${ALERT_EMAIL}"
-)
-
+                mimeType: 'text/html',
+                to: "${ALERT_EMAIL}"
+            )
         }
-
 
         success {
             echo 'Build and deployment passed successfully!'
             emailext(
-    subject: "✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-    body: """\
+                subject: "✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """\
 <html>
 <body>
 <h3>Flask Application Build & Deployment SUCCEEDED ✅</h3>
 <p><strong>Job:</strong> ${env.JOB_NAME}</p>
 <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-<p><strong>Branch:</strong> ${env.GIT_BRANCH}</p>
-<p><strong>Git Repo:</strong> ${env.GITREPO}</p>
-<p><strong>Docker Image:</strong> ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}</p>
-<p><strong>Deployed To:</strong> EC2 (${env.EC2_HOST})</p>
+<p><strong>Branch:</strong> ${GIT_BRANCH}</p>
+<p><strong>Git Repo:</strong> ${GITREPO}</p>
+<p><strong>Docker Image:</strong> ${DOCKER_IMAGE}:${env.BUILD_NUMBER}</p>
+<p><strong>Deployed To:</strong> EC2 (${EC2_HOST})</p>
 <p><strong>Deployment Time:</strong> ${new Date().format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("Asia/Kolkata"))}</p>
 <p><a href="${env.BUILD_URL}">Click here to view full build logs</a></p>
 </body>
 </html>
 """,
-    mimeType: 'text/html',
-    to: "${ALERT_EMAIL}"
-)
+                mimeType: 'text/html',
+                to: "${ALERT_EMAIL}"
+            )
 
-       }
-
-        
-           script {
+            script {
                 sh '''
                     echo "===== Deployment Success Summary ====="
                     echo "Build Number: ${BUILD_NUMBER}"
                     echo "Docker Image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
                     echo "Deployment Timestamp: $(date '+%Y-%m-%d %H:%M:%S')"
-                    
+
                     echo "\n----- Docker Images -----"
                     docker images | grep "${DOCKER_IMAGE}"
-                    
+
                     echo "\n----- Running Containers -----"
                     docker ps
-                    
+
                     echo "\n----- Disk Space -----"
                     df -h
-                    
+
                     echo "\n----- Docker System Info -----"
                     docker system info
-                    
+
                     echo "\n----- Cleanup Old Images -----"
-                    # List and sort images by creation time, keeping only the two most recent builds
                     docker images --format "{{.Repository}}:{{.Tag}} {{.ID}} {{.CreatedAt}}" | \
                     grep "${DOCKER_IMAGE}" | \
                     sort -k3,4r | \
                     awk 'NR>2 {print $2}' | \
                     xargs -r docker rmi || true
 
-                    
                     echo "===== Deployment Success Cleanup Complete ====="
                 '''
             }
         }
+    }
+}
+
