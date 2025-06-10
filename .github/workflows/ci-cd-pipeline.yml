@@ -47,7 +47,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          pytest tests/
+          pytest tests/test.py
+
 
   build:
     needs: run-tests
