@@ -105,7 +105,7 @@ pipeline {
                                 ${DOCKER_IMAGE}:${BUILD_NUMBER}
 
                             echo "Deployment done."
-                        EOF
+                        
                     """
                 }
             }
