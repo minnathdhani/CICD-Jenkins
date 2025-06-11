@@ -34,6 +34,7 @@ def test_add_student(client):
     assert response.json["age"] == 34
 
 def test_get_all_students(client):
+    students_collection.delete_many({})
     students_collection.insert_one({"name": "Charlie Lee", "age": 22})
     response = client.get('/students')
     assert response.status_code == 200
