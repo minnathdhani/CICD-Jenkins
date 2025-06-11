@@ -44,7 +44,8 @@ pipeline {
                     . venv/bin/activate
                     if [ -d "tests" ]; then
                         echo "Running tests..."
-                        venv/bin/pytest tests/
+                        export PYTHONPATH=$(pwd)
+                        pytest tests/
                     else
                         echo "No tests found"
                     fi

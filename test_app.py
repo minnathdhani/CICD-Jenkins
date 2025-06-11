@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pytest
 from app import app, students_collection, add_student, get_students, get_student_by_id, delete_student
 from bson import ObjectId
