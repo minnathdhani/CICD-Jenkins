@@ -6,7 +6,7 @@ pipeline {
         GIT_BRANCH = "main"
         EC2_SSH = "minnath-ec2"
         EC2_USER = "ubuntu"
-        EC2_HOST = "35.154.171.88"
+        EC2_HOST = "3.6.126.191"
         CONTAINER_NAME = "minnath-flask-cicd"
         DOCKER_IMAGE = "minnathdhani/flask"
         DOCKER_CREDENTIALS_ID = "minnath-docker-cred"
