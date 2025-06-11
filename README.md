@@ -93,23 +93,27 @@ Install the following plugins from Manage Jenkins > Plugin Manager:<br>
 ### Screenshorts:
 
 1. Jenkins dashboard showing pipeline success<br>
-    <br>
-
-2. Automatic pipeline build trigger<br>
+    <img width="942" alt="image" src="https://github.com/user-attachments/assets/e78de979-7daf-4bdc-8bc6-b026ed4e575b" /><br>
    
-3. Jenkins pripeline overview<br>
-    <img width="932" alt="image" src="https://github.com/user-attachments/assets/8b6f0b1c-3774-4bf2-acd1-1d92fef3e594" /><br>
+2. Jenkins pripeline overview<br>
+    <img width="946" alt="image" src="https://github.com/user-attachments/assets/e3c78ef0-c691-4113-9ba8-6679682f6074" /><br>
 
 4. Email notifications<br>
-   Failure Email<br>
-   Success Email<br>
+   Success Email 
+   <br>
    
 5. Application Screenshots<br>
    <img width="956" alt="image" src="https://github.com/user-attachments/assets/692fcdb4-db00-4f09-bfb3-804d6c6d2483" /><br>
    <img width="552" alt="image" src="https://github.com/user-attachments/assets/594a0b07-4a34-449d-901a-6eb4d7108f67" /><br>
-
-
-
-6. Adding new users<br>
+   ![Screenshot (2)](https://github.com/user-attachments/assets/863b76d6-ddb4-47ec-b31e-c21d83c89e5d)<br>
+   ![Screenshot (4)](https://github.com/user-attachments/assets/eb52872d-a0d0-4565-94d0-700c14668333)<br?
    
+
+
+7. Adding new users<br>
+   ![image](https://github.com/user-attachments/assets/43551600-18a1-453b-833f-ccc5db3bd75e)<br>
+   <img width="628" alt="image" src="https://github.com/user-attachments/assets/571c085d-3d3c-45d2-bade-390f847a48a1" /><br>
+   
+
+
 
