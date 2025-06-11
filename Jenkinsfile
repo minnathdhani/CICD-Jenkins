@@ -116,6 +116,7 @@ pipeline {
         failure {
             echo 'Build or test failed. Sending notifications...'
             emailext(
+                to: 'minnathdhani@gmail.com',
                 subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """\
 <html>
@@ -140,6 +141,7 @@ pipeline {
         success {
             echo 'Build and deployment passed successfully!'
             emailext(
+                to: 'minnathdhani@gmail.com',
                 subject: "✅ Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """\
 <html>
