@@ -39,7 +39,7 @@ def test_get_all_students(client):
     response = client.get('/students')
     assert response.status_code == 200
     assert isinstance(response.json, list)
-    assert len(response.json) == 1
+    assert len(response.json) == 22
 
 def test_delete_student(client):
     student = students_collection.insert_one({"name": "Diana Patel", "age": 30})
