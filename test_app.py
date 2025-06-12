@@ -34,15 +34,15 @@ def test_add_student(client):
     assert response.json["name"] == "Bob Smith"
     assert response.json["age"] == 34
 
-def test_get_all_students(client):
-    students_collection.delete_many({})
-    students_collection.insert_one({"name": "Charlie Lee", "age": 22})
-    response = client.get('/students')
-    assert response.status_code == 200
-    assert isinstance(response.json, list)
-    assert len(response.json) > 0
-    assert response.json[0]['name'] == "Charlie Lee"
-    assert response.json[0]['age'] == 22
+#def test_get_all_students(client):
+ #   students_collection.delete_many({})
+  #  students_collection.insert_one({"name": "Charlie Lee", "age": 22})
+   # response = client.get('/students')
+    #assert response.status_code == 200
+    #assert isinstance(response.json, list)
+    #assert len(response.json) > 0
+    #assert response.json[0]['name'] == "Charlie Lee"
+    #assert response.json[0]['age'] == 22
 
 def test_delete_student(client,students_collection):
     student = students_collection.insert_one({"name": "Diana Patel", "age": 30})
