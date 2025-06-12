@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pytest
+from pymongo import MongoClient
 from app import app, students_collection, add_student, get_students, get_student_by_id, delete_student
 from bson import ObjectId
 
@@ -43,7 +44,7 @@ def test_get_all_students(client):
     assert response.json[0]['name'] == "Charlie Lee"
     assert response.json[0]['age'] == 22
 
-def test_delete_student(client):
+def test_delete_student(client,students_collection):
     student = students_collection.insert_one({"name": "Diana Patel", "age": 30})
     response = client.delete(f'/students/{student.inserted_id}')
     assert response.status_code == 200
