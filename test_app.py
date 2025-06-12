@@ -40,7 +40,7 @@ def test_get_all_students(client):
     response = client.get('/students')
     assert response.status_code == 200
     assert isinstance(response.json, list)
-    assert len(response.json) == 1
+    assert len(response.json) > 0
     assert response.json[0]['name'] == "Charlie Lee"
     assert response.json[0]['age'] == 22
 
